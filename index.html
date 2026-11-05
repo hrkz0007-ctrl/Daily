@@ -1,1 +1,95 @@
-
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#071426">
+<title>DAILY FASHION — Everyday, elevated.</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+:root{--navy:#071426;--navy2:#0c2038;--ink:#101a29;--paper:#f2f3f1;--muted:#aab5c3;--line:rgba(255,255,255,.14)}
+*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--navy);color:#f7f8fa;font-family:'DM Sans',sans-serif}
+a{color:inherit;text-decoration:none}button,input{font:inherit}.shell{max-width:1440px;margin:auto;padding:0 5.2%}
+.topbar{height:38px;display:flex;align-items:center;justify-content:center;background:#e8edf1;color:#0b1b30;font-size:10px;letter-spacing:.2em;text-transform:uppercase}
+header{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:relative;z-index:5}
+.logo{font:800 27px Manrope;letter-spacing:.19em}.logo span{font-weight:400;color:#9eb2c9}
+nav{display:flex;gap:32px;font-size:12px;color:#c7d0db;letter-spacing:.08em;text-transform:uppercase}nav a:hover{color:white}
+.actions{display:flex;align-items:center;gap:18px}.iconbtn{background:none;border:0;color:white;cursor:pointer;font-size:18px;position:relative}.count{font-size:9px;background:#dfe7ef;color:#08172a;border-radius:50%;padding:3px 6px;position:absolute;top:-8px;right:-10px}
+.hero{min-height:590px;position:relative;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
+.hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border:1px solid rgba(185,207,231,.18);border-radius:48%}
+.hero:before{width:700px;height:700px;right:2%;top:-19%;box-shadow:0 0 0 28px rgba(160,190,220,.025),0 0 0 78px rgba(160,190,220,.025),0 0 0 130px rgba(160,190,220,.02)}
+.hero:after{width:420px;height:420px;right:12%;top:5%;border-width:48px;border-color:rgba(160,190,220,.055);transform:rotate(38deg)}
+.hero-copy{position:relative;z-index:2;max-width:600px;padding:95px 0}
+.eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#9fb2c8}
+h1{font:500 clamp(58px,8vw,112px)/.94 Manrope;letter-spacing:-.075em;margin:26px 0 24px}h1 em{font-style:normal;color:#9eb3ca}
+.hero p{color:#bac5d1;max-width:390px;line-height:1.8;font-size:14px}
+.primary{display:inline-flex;align-items:center;gap:25px;margin-top:24px;padding:16px 22px;background:#edf1f4;color:#0b1a2d;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;border:0;cursor:pointer;transition:.2s}.primary:hover{background:#b9c9d9;transform:translateY(-2px)}
+.hero-note{position:absolute;bottom:35px;right:0;color:#8fa2b8;font-size:9px;letter-spacing:.2em;text-transform:uppercase}
+.marquee{padding:17px 0;border-bottom:1px solid var(--line);color:#91a5bb;font-size:10px;letter-spacing:.24em;text-align:center;text-transform:uppercase}
+.section{padding:82px 0}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:30px}.section-head h2{font:500 clamp(32px,4vw,48px) Manrope;letter-spacing:-.05em;margin:12px 0 0}.section-head p{color:#9eacbc;font-size:12px}
+.toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px;flex-wrap:wrap}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{background:transparent;color:#aebbc9;border:1px solid #304156;padding:10px 15px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.filter.active,.filter:hover{background:#e9eef2;color:#0b1a2d;border-color:#e9eef2}
+.search{background:#0d2037;border:1px solid #304156;color:white;padding:11px 14px;min-width:210px;outline:none;font-size:11px}.search:focus{border-color:#a8bbd0}
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 15px}.product{min-width:0}.photo{aspect-ratio: .78;background:#e7e9e8;position:relative;overflow:hidden}.photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}.product:hover .photo img{transform:scale(1.045)}.tag{position:absolute;left:12px;top:12px;background:#f0f2f2;color:#142238;padding:7px 9px;font-size:8px;letter-spacing:.13em;text-transform:uppercase}.heart{position:absolute;right:12px;top:10px;background:rgba(8,22,39,.75);border:0;color:white;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px}.heart.on{color:#d9a6b2}.details{display:flex;justify-content:space-between;gap:10px;padding:13px 1px 0}.name{font-size:12px;color:#f0f2f4}.category{font-size:10px;color:#899bad;margin-top:5px}.price{font-size:12px;color:#d8e0e8;white-space:nowrap}.add{width:100%;margin-top:11px;background:transparent;border:1px solid #304156;color:#d7e0e9;padding:10px;font-size:9px;text-transform:uppercase;letter-spacing:.16em;cursor:pointer}.add:hover{background:#e9eef2;color:#0b1a2d}
+.story{display:grid;grid-template-columns:1fr 1fr;min-height:370px;background:#e8edf1;color:#0c1b2e}.story-art{position:relative;overflow:hidden;background:linear-gradient(145deg,#132b48,#071426)}.story-art:before{content:"";position:absolute;width:360px;height:360px;border:55px solid rgba(208,222,235,.14);border-radius:48%;left:18%;top:8%;transform:rotate(-32deg);box-shadow:0 0 0 35px rgba(208,222,235,.04),0 0 0 85px rgba(208,222,235,.035)}.story-copy{padding:60px;align-self:center}.story-copy h2{font:500 42px/1.05 Manrope;letter-spacing:-.06em;margin:18px 0}.story-copy p{font-size:13px;line-height:1.8;color:#526174;max-width:400px}
+footer{padding:55px 0 30px;border-top:1px solid var(--line)}.footrow{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}.footbrand{font:800 24px Manrope;letter-spacing:.2em}.footnote{color:#8394a8;font-size:11px;line-height:1.8}.footlinks{display:flex;gap:22px;color:#a9b7c6;font-size:10px;text-transform:uppercase;letter-spacing:.12em}.copyright{margin-top:45px;padding-top:18px;border-top:1px solid var(--line);font-size:9px;color:#73869c;letter-spacing:.12em}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10;display:none}.overlay.show{display:block}.cart{position:fixed;right:0;top:0;height:100%;width:min(420px,100%);background:#f1f3f3;color:#101c2b;z-index:11;padding:25px;transform:translateX(105%);transition:.3s;overflow:auto}.cart.show{transform:translateX(0)}.carthead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cbd1d6;padding-bottom:18px}.carthead h3{font:600 22px Manrope}.close{border:0;background:none;font-size:24px;cursor:pointer}.cartitem{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid #d6dade}.cartitem img{width:70px;height:88px;object-fit:cover}.cartitem small{display:block;color:#647183;margin-top:6px}.carttotal{display:flex;justify-content:space-between;margin:24px 0;font-weight:700}.checkout{width:100%;padding:15px;background:#0a1b30;color:white;border:0;text-transform:uppercase;letter-spacing:.13em;font-size:10px}
+.empty{padding:30px 0;color:#697789;font-size:13px}
+@media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}nav{gap:15px}.hero:before{right:-30%}.hero:after{right:-5%}}
+@media(max-width:620px){.shell{padding:0 5%}header{height:68px}.logo{font-size:22px}nav{display:none}.hero{min-height:530px}.hero-copy{padding:70px 0}.hero-note{font-size:8px}.section{padding:60px 0}.grid{grid-template-columns:repeat(2,1fr);gap:24px 10px}.toolbar{align-items:stretch}.search{width:100%}.story{grid-template-columns:1fr}.story-art{min-height:220px}.story-copy{padding:35px 25px}.story-copy h2{font-size:34px}.section-head{align-items:start;display:block}.section-head p{margin-top:12px}}
+</style>
+</head>
+<body>
+<div class="topbar">Free shipping on orders over €100 · New collection available</div>
+<div class="shell">
+<header><a class="logo" href="#">DAILY<span>.</span></a><nav><a href="#shop">Shop</a><a href="#shop" data-cat-link="Homme">Homme</a><a href="#shop" data-cat-link="Femme">Femme</a><a href="#story">Notre univers</a></nav><div class="actions"><button class="iconbtn" aria-label="Favoris" onclick="showFavorites()">♡</button><button class="iconbtn" aria-label="Panier" onclick="openCart()">♧<span class="count" id="cartCount">0</span></button></div></header>
+<section class="hero"><div class="hero-copy"><div class="eyebrow">Daily essentials · Collection 01</div><h1>DAILY<br><em>FASHION.</em></h1><p>Des essentiels contemporains, des silhouettes simples et des pièces pensées pour accompagner chaque journée.</p><a class="primary" href="#shop">Découvrir la collection <span>↗</span></a></div><div class="hero-note">Paris · Everyday, elevated</div></section>
+<div class="marquee">LESS, BUT BETTER &nbsp; — &nbsp; DAILY WARDROBE &nbsp; — &nbsp; MADE FOR EVERY DAY</div>
+<section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">Sélection quotidienne</div><h2>La collection</h2></div><p id="resultCount">24 pièces à découvrir</p></div>
+<div class="toolbar"><div class="filters"><button class="filter active" data-filter="Tous">Tout</button><button class="filter" data-filter="Homme">Homme</button><button class="filter" data-filter="Femme">Femme</button><button class="filter" data-filter="Chaussures">Chaussures</button><button class="filter" data-filter="Accessoires">Accessoires</button></div><input class="search" id="search" placeholder="Rechercher un article..." aria-label="Rechercher un article"></div><div class="grid" id="products"></div></section>
+<section class="story" id="story"><div class="story-art"></div><div class="story-copy"><div class="eyebrow">L'esprit DAILY</div><h2>Le style.<br>Sans effort.</h2><p>Une garde-robe construite autour de pièces faciles à porter, de coupes intemporelles et de détails subtils. DAILY accompagne le quotidien, simplement.</p><a class="primary" href="#shop">Explorer les pièces <span>↗</span></a></div></section>
+<footer><div class="footrow"><div><div class="footbrand">DAILY.</div><p class="footnote">DAILY FASHION<br>Everyday, elevated.</p></div><div class="footlinks"><a href="#shop">Boutique</a><a href="#story">À propos</a><a href="mailto:hello@daily-fashion.example">Contact</a></div></div><div class="copyright">© 2026 DAILY FASHION · DEMO STORE</div></footer>
+</div>
+<div class="overlay" id="overlay" onclick="closeCart()"></div><aside class="cart" id="cart"><div class="carthead"><h3>Votre panier</h3><button class="close" onclick="closeCart()">×</button></div><div id="cartItems"></div><div class="carttotal"><span>Total</span><span id="total">€0.00</span></div><button class="checkout" onclick="alert('Boutique de démonstration : le paiement sera ajouté plus tard.')">Passer la commande</button></aside>
+<script>
+const items=[
+["T-shirt Essential","Homme","€29.00","https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=700","BESTSELLER"],
+["Sweat Oversize","Homme","€65.00","https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=700","NEW"],
+["Chemise Oxford","Homme","€59.00","https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=700",""],
+["Pantalon Relax","Homme","€72.00","https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=700",""],
+["Veste Workwear","Homme","€110.00","https://images.unsplash.com/photo-1551028719-00167b16eac5?w=700","NEW"],
+["Hoodie Daily","Homme","€79.00","https://images.unsplash.com/photo-1578681994506-b8f463449011?w=700",""],
+["Jean Straight","Homme","€69.00","https://images.unsplash.com/photo-1542272604-787c3835535d?w=700",""],
+["Polo Minimal","Homme","€45.00","https://images.unsplash.com/photo-1625910513413-5fc4e6d7a2f6?w=700",""],
+["Top côtelé","Femme","€32.00","https://images.unsplash.com/photo-1564257577-1e3b7f6c3f8a?w=700","NEW"],
+["Pull Soft Knit","Femme","€74.00","https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=700",""],
+["Robe Daily","Femme","€89.00","https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=700",""],
+["Blazer Oversize","Femme","€115.00","https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700",""],
+["Pantalon Tailored","Femme","€76.00","https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=700",""],
+["Cardigan Soft","Femme","€68.00","https://images.unsplash.com/photo-1627225924765-552d49cf47ad?w=700",""],
+["Jupe Studio","Femme","€54.00","https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=700",""],
+["Chemise Daily","Femme","€62.00","https://images.unsplash.com/photo-1608234807905-4466023792f5?w=700",""],
+["Sneakers Court","Chaussures","€95.00","https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700","BESTSELLER"],
+["Sneakers Mono","Chaussures","€89.00","https://images.unsplash.com/photo-149-5555961986-6d4c1ecb7be3?w=700",""],
+["Runner Retro","Chaussures","€105.00","https://images.unsplash.com/photo-1552346154-21d32810aba3?w=700","NEW"],
+["Boots Urban","Chaussures","€130.00","https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=700",""],
+["Sac Everyday","Accessoires","€85.00","https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700",""],
+["Casquette Logo","Accessoires","€28.00","https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=700",""],
+["Ceinture Classic","Accessoires","€35.00","https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700",""],
+["Tote Bag Daily","Accessoires","€22.00","https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=700",""]
+];
+let filter="Tous",cart=[],favorites=new Set(),favoriteMode=false;
+const grid=document.getElementById('products');
+function render(){let q=document.getElementById('search').value.toLowerCase();let shown=items.map((p,i)=>({...p,id:i})).filter(p=>(filter==="Tous"||p[1]===filter)&&((p[0]+" "+p[1]).toLowerCase().includes(q))&&(!favoriteMode||favorites.has(p.id)));document.getElementById('resultCount').textContent=shown.length+" pièce"+(shown.length>1?"s":"")+" à découvrir";grid.innerHTML=shown.map(p=>'<article class="product"><div class="photo"><img loading="lazy" src="'+p[3]+'" alt="'+p[0]+'" onerror="this.style.opacity=0.15"><span class="tag">'+(p[4]||p[1])+'</span><button class="heart '+(favorites.has(p.id)?'on':'')+'" onclick="toggleFav('+p.id+')" aria-label="Ajouter aux favoris">'+(favorites.has(p.id)?'♥':'♡')+'</button></div><div class="details"><div><div class="name">'+p[0]+'</div><div class="category">'+p[1]+'</div></div><div class="price">'+p[2]+'</div></div><button class="add" onclick="addCart('+p.id+')">Ajouter au panier +</button></article>').join('')||'<p class="empty">Aucun article trouvé.</p>'}
+document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;favoriteMode=false;render()}));
+document.getElementById('search').addEventListener('input',render);
+document.querySelectorAll('[data-cat-link]').forEach(a=>a.addEventListener('click',()=>{filter=a.dataset.catLink;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.filter===filter));render()}));
+function toggleFav(id){favorites.has(id)?favorites.delete(id):favorites.add(id);render()}
+function showFavorites(){favoriteMode=!favoriteMode;filter="Tous";document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.filter==="Tous"));render();document.getElementById('shop').scrollIntoView()}
+function addCart(id){cart.push(id);document.getElementById('cartCount').textContent=cart.length;renderCart();openCart()}
+function renderCart(){let el=document.getElementById('cartItems');el.innerHTML=cart.length?cart.map((id,i)=>'<div class="cartitem"><img src="'+items[id][3]+'" alt=""><div><strong>'+items[id][0]+'</strong><small>'+items[id][2]+'</small><button style="border:0;background:none;padding:8px 0;color:#657386;cursor:pointer" onclick="removeCart('+i+')">Retirer</button></div></div>').join(''):'<div class="empty">Votre panier est vide pour le moment.</div>';let total=cart.reduce((s,id)=>s+Number(items[id][2].replace('€','')),0);document.getElementById('total').textContent='€'+total.toFixed(2)}
+function removeCart(i){cart.splice(i,1);document.getElementById('cartCount').textContent=cart.length;renderCart()}
+function openCart(){document.getElementById('overlay').classList.add('show');document.getElementById('cart').classList.add('show')}
+function closeCart(){document.getElementById('overlay').classList.remove('show');document.getElementById('cart').classList.remove('show')}
+render();
+</script>
+</body></html>
