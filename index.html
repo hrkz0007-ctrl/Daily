@@ -1,110 +1,313 @@
-<!DOCTYPE html>
+from pathlib import Path
+import base64, re
+
+base = Path("/mnt/data")
+html_path = base / "daily-fashion-homepage-v2.html"
+bg_path = base / "d9910abe9a52822110af1d5d90347bab(1).jpg"
+if not bg_path.exists():
+    bg_path = base / "d9910abe9a52822110af1d5d90347bab.jpg"
+
+# Build a single-file site with the supplied abstract artwork embedded as its background.
+bg_data = base64.b64encode(bg_path.read_bytes()).decode("ascii")
+bg_url = f"data:image/jpeg;base64,{bg_data}"
+
+site = r'''<!DOCTYPE html>
 <html lang="fr">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#071426">
-<title>DAILY FASHION — Everyday, elevated.</title>
+<meta name="theme-color" content="#06141b">
+<title>DAILY — Daily Fashion</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
-:root{--navy:#071426;--navy2:#0c2038;--ink:#101a29;--paper:#f2f3f1;--muted:#aab5c3;--line:rgba(255,255,255,.14)}
-*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:var(--navy);color:#f7f8fa;font-family:'DM Sans',sans-serif}
-a{color:inherit;text-decoration:none}button,input{font:inherit}.shell{max-width:1440px;margin:auto;padding:0 5.2%}
-.topbar{height:38px;display:flex;align-items:center;justify-content:center;background:#e8edf1;color:#0b1b30;font-size:10px;letter-spacing:.2em;text-transform:uppercase}
-header{height:82px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);position:relative;z-index:5}
-.logo{font:800 27px Manrope;letter-spacing:.19em}.logo span{font-weight:400;color:#9eb2c9}
-nav{display:flex;gap:32px;font-size:12px;color:#c7d0db;letter-spacing:.08em;text-transform:uppercase}nav a:hover{color:white}
-.actions{display:flex;align-items:center;gap:18px}.iconbtn{background:none;border:0;color:white;cursor:pointer;font-size:18px;position:relative}.count{font-size:9px;background:#dfe7ef;color:#08172a;border-radius:50%;padding:3px 6px;position:absolute;top:-8px;right:-10px}
-.hero{min-height:590px;position:relative;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid var(--line)}
-.hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border:1px solid rgba(185,207,231,.18);border-radius:48%}
-.hero:before{width:700px;height:700px;right:2%;top:-19%;box-shadow:0 0 0 28px rgba(160,190,220,.025),0 0 0 78px rgba(160,190,220,.025),0 0 0 130px rgba(160,190,220,.02)}
-.hero:after{width:420px;height:420px;right:12%;top:5%;border-width:48px;border-color:rgba(160,190,220,.055);transform:rotate(38deg)}
-.hero-copy{position:relative;z-index:2;max-width:600px;padding:95px 0}
-.eyebrow{font-size:10px;letter-spacing:.28em;text-transform:uppercase;color:#9fb2c8}
-h1{font:500 clamp(58px,8vw,112px)/.94 Manrope;letter-spacing:-.075em;margin:26px 0 24px}h1 em{font-style:normal;color:#9eb3ca}
-.hero p{color:#bac5d1;max-width:390px;line-height:1.8;font-size:14px}
-.primary{display:inline-flex;align-items:center;gap:25px;margin-top:24px;padding:16px 22px;background:#edf1f4;color:#0b1a2d;font-size:10px;letter-spacing:.16em;text-transform:uppercase;font-weight:700;border:0;cursor:pointer;transition:.2s}.primary:hover{background:#b9c9d9;transform:translateY(-2px)}
-.hero-note{position:absolute;bottom:35px;right:0;color:#8fa2b8;font-size:9px;letter-spacing:.2em;text-transform:uppercase}
-.marquee{padding:17px 0;border-bottom:1px solid var(--line);color:#91a5bb;font-size:10px;letter-spacing:.24em;text-align:center;text-transform:uppercase}
-.section{padding:82px 0}.section-head{display:flex;justify-content:space-between;align-items:end;margin-bottom:30px}.section-head h2{font:500 clamp(32px,4vw,48px) Manrope;letter-spacing:-.05em;margin:12px 0 0}.section-head p{color:#9eacbc;font-size:12px}
-.toolbar{display:flex;justify-content:space-between;align-items:center;gap:15px;margin-bottom:24px;flex-wrap:wrap}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{background:transparent;color:#aebbc9;border:1px solid #304156;padding:10px 15px;font-size:10px;letter-spacing:.1em;text-transform:uppercase;cursor:pointer}.filter.active,.filter:hover{background:#e9eef2;color:#0b1a2d;border-color:#e9eef2}
-.search{background:#0d2037;border:1px solid #304156;color:white;padding:11px 14px;min-width:210px;outline:none;font-size:11px}.search:focus{border-color:#a8bbd0}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:28px 15px}.product{min-width:0}.photo{aspect-ratio: .78;background:#e7e9e8;position:relative;overflow:hidden}.photo img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s}.product:hover .photo img{transform:scale(1.045)}.tag{position:absolute;left:12px;top:12px;background:#f0f2f2;color:#142238;padding:7px 9px;font-size:8px;letter-spacing:.13em;text-transform:uppercase}.heart{position:absolute;right:12px;top:10px;background:rgba(8,22,39,.75);border:0;color:white;border-radius:50%;width:32px;height:32px;cursor:pointer;font-size:16px}.heart.on{color:#d9a6b2}.details{display:flex;justify-content:space-between;gap:10px;padding:13px 1px 0}.name{font-size:12px;color:#f0f2f4}.category{font-size:10px;color:#899bad;margin-top:5px}.price{font-size:12px;color:#d8e0e8;white-space:nowrap}.add{width:100%;margin-top:11px;background:transparent;border:1px solid #304156;color:#d7e0e9;padding:10px;font-size:9px;text-transform:uppercase;letter-spacing:.16em;cursor:pointer}.add:hover{background:#e9eef2;color:#0b1a2d}
-.story{display:grid;grid-template-columns:1fr 1fr;min-height:370px;background:#e8edf1;color:#0c1b2e}.story-art{position:relative;overflow:hidden;background:linear-gradient(145deg,#132b48,#071426)}.story-art:before{content:"";position:absolute;width:360px;height:360px;border:55px solid rgba(208,222,235,.14);border-radius:48%;left:18%;top:8%;transform:rotate(-32deg);box-shadow:0 0 0 35px rgba(208,222,235,.04),0 0 0 85px rgba(208,222,235,.035)}.story-copy{padding:60px;align-self:center}.story-copy h2{font:500 42px/1.05 Manrope;letter-spacing:-.06em;margin:18px 0}.story-copy p{font-size:13px;line-height:1.8;color:#526174;max-width:400px}
-footer{padding:55px 0 30px;border-top:1px solid var(--line)}.footrow{display:flex;justify-content:space-between;gap:30px;flex-wrap:wrap}.footbrand{font:800 24px Manrope;letter-spacing:.2em}.footnote{color:#8394a8;font-size:11px;line-height:1.8}.footlinks{display:flex;gap:22px;color:#a9b7c6;font-size:10px;text-transform:uppercase;letter-spacing:.12em}.copyright{margin-top:45px;padding-top:18px;border-top:1px solid var(--line);font-size:9px;color:#73869c;letter-spacing:.12em}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.55);z-index:10;display:none}.overlay.show{display:block}.cart{position:fixed;right:0;top:0;height:100%;width:min(420px,100%);background:#f1f3f3;color:#101c2b;z-index:11;padding:25px;transform:translateX(105%);transition:.3s;overflow:auto}.cart.show{transform:translateX(0)}.carthead{display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid #cbd1d6;padding-bottom:18px}.carthead h3{font:600 22px Manrope}.close{border:0;background:none;font-size:24px;cursor:pointer}.cartitem{display:flex;gap:14px;padding:16px 0;border-bottom:1px solid #d6dade}.cartitem img{width:70px;height:88px;object-fit:cover}.cartitem small{display:block;color:#647183;margin-top:6px}.carttotal{display:flex;justify-content:space-between;margin:24px 0;font-weight:700}.checkout{width:100%;padding:15px;background:#0a1b30;color:white;border:0;text-transform:uppercase;letter-spacing:.13em;font-size:10px}
-.empty{padding:30px 0;color:#697789;font-size:13px}
-@media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}nav{gap:15px}.hero:before{right:-30%}.hero:after{right:-5%}}
-@media(max-width:620px){.shell{padding:0 5%}header{height:68px}.logo{font-size:22px}nav{display:none}.hero{min-height:530px}.hero-copy{padding:70px 0}.hero-note{font-size:8px}.section{padding:60px 0}.grid{grid-template-columns:repeat(2,1fr);gap:24px 10px}.toolbar{align-items:stretch}.search{width:100%}.story{grid-template-columns:1fr}.story-art{min-height:220px}.story-copy{padding:35px 25px}.story-copy h2{font-size:34px}.section-head{align-items:start;display:block}.section-head p{margin-top:12px}}
-/* DAILY — redesign inspired by the second reference */
-body{background:#071820;position:relative;overflow-x:hidden}
-body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse at 48% -10%,#b9c9c98c,transparent 34%),radial-gradient(ellipse at 3% 35%,#7d919477,transparent 27%),radial-gradient(ellipse at 95% 40%,#71898c66,transparent 30%),linear-gradient(145deg,#526165,#172e36 27%,#061820 68%,#102a32)}
-.topbar{display:none}
-header{height:134px;margin:26px 0 0;padding:0 34px;border:1px solid #e6f2f43d;border-radius:32px;background:linear-gradient(110deg,#dce7e742,#0c252fae 42%,#071c37c7);backdrop-filter:blur(22px);box-shadow:0 15px 55px #0002}
-.logo{font-size:39px;letter-spacing:.08em}.logo span{display:none}nav{gap:clamp(18px,3.8vw,58px);font-size:19px;color:#d4dcde}nav a{padding:8px 0;border-bottom:3px solid transparent}nav a:hover,nav a:first-child{color:white;border-color:#eaf0f1}.iconbtn{font-size:30px}
-.hero{min-height:680px;padding:0 4.2%;border:0;background:transparent}
-.hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border-radius:50%;z-index:0}
-.hero:before{width:780px;height:780px;right:-4%;top:-24%;background:radial-gradient(circle at 35% 28%,#ced8d894,#4b63649e 38%,#03171ffa 70%);box-shadow:-470px 120px 0 -210px #b1bebe38,-610px -220px 0 -260px #03141ce6,0 0 0 1px #e7f0f01f}
-.hero:after{width:590px;height:590px;right:10%;top:25%;border:90px solid #acbebf1f;box-shadow:0 0 0 42px #04161e40,0 0 0 95px #c3d0d014;transform:rotate(-24deg)}
-.hero-copy{max-width:750px;padding:105px 0 125px;z-index:2}.eyebrow{font-size:15px;letter-spacing:.3em;color:#c0cdd0}
-h1{font-size:clamp(76px,10vw,148px);font-weight:800;line-height:.82;letter-spacing:-.075em;margin:55px 0 30px}h1 em{color:#aebfc3}.hero p{color:#d0dadd;max-width:490px;font-size:18px}.primary{padding:17px 24px;background:#eef2f2;color:#0b2028}.hero-note{color:#b0c1c4}
-.marquee{color:#c0ced0;background:#03131a4d}.section-head p,.footnote{color:#bdc9cc}.filter,.search,.add{background:#071d268c;border-color:#52676d;color:#d0dcde}.filter.active,.filter:hover,.add:hover{background:#e9eef0;color:#0b1a22}.category{color:#b0c0c4}.price{color:#e0e8e9}
-.story-art{background:radial-gradient(circle at 60% 20%,#819294,#17323a 50%,#061820)}
-@media(max-width:900px){header{height:105px;padding:0 22px}.logo{font-size:30px}nav{gap:17px;font-size:14px}.hero:before{right:-30%}.hero:after{right:-5%}}
-@media(max-width:620px){header{height:76px;margin-top:12px;padding:0 17px;border-radius:22px}.logo{font-size:24px}.iconbtn{font-size:25px}.hero{min-height:550px;padding:0 2%}.hero:before{width:520px;height:520px;right:-70%;top:-5%}.hero:after{width:360px;height:360px;right:-28%;top:28%;border-width:55px}h1{font-size:clamp(66px,17vw,100px);margin:40px 0 25px}.hero p{font-size:15px;max-width:330px}}</style>
+:root {
+  --night:#06141b; --deep:#11212d; --blue:#253745; --slate:#4a5c6a;
+  --mist:#9ba8ab; --pale:#ccd0cf; --white:#f5f7f7;
+  --glass:rgba(8,22,31,.72); --line:rgba(226,236,240,.22);
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{
+  margin:0; min-height:100vh; color:var(--white);
+  font-family:Inter,Arial,Helvetica,sans-serif;
+  background:#06141b url("__BACKGROUND__") center center / cover fixed no-repeat;
+  position:relative;
+}
+body:before{
+  content:""; position:fixed; inset:0; z-index:-1;
+  background:linear-gradient(135deg,rgba(3,12,18,.84),rgba(6,20,27,.66) 48%,rgba(9,25,35,.82));
+}
+a{color:inherit;text-decoration:none}
+button,input{font:inherit}
+.shell{width:min(1500px,calc(100% - 64px));margin:28px auto 36px}
+.topbar{
+  height:76px;padding:0 34px;display:flex;align-items:center;justify-content:space-between;
+  gap:22px;border:1px solid var(--line);border-radius:22px;
+  background:rgba(4,16,24,.60);backdrop-filter:blur(22px);
+  box-shadow:0 14px 45px rgba(0,0,0,.18)
+}
+.brand{font-size:29px;font-weight:900;letter-spacing:2px}
+.nav{display:flex;align-items:center;gap:32px}
+.nav a{font-size:14px;color:#d3dce0;transition:.2s}
+.nav a:hover,.nav a.active{color:white}
+.nav a.active{border-bottom:2px solid white;padding-bottom:8px}
+.actions{display:flex;align-items:center;gap:20px}
+.icon-btn,.menu-btn{border:0;background:transparent;color:white;font-size:22px;cursor:pointer}
+.bag-count{font-size:11px;vertical-align:top;background:#e9eeee;color:#0b1720;border-radius:50%;padding:3px 6px}
+.menu-btn{display:none}
+.hero{
+  min-height:475px;display:grid;grid-template-columns:1fr 1fr;align-items:center;
+  padding:72px 5% 36px;position:relative
+}
+.eyebrow{font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#b8c4ca;font-weight:700}
+.eyebrow:after{content:"";display:inline-block;width:70px;height:1px;background:#7f929c;margin:0 0 3px 18px}
+h1{font-size:clamp(64px,9vw,132px);line-height:.82;letter-spacing:-8px;margin:28px 0 24px;font-weight:900}
+h1 span{display:block;color:#9ba8ab}
+.hero p{color:#c1cbd0;font-size:17px;margin:0 0 28px}
+.cta{
+  display:inline-flex;align-items:center;gap:18px;padding:15px 22px;border-radius:40px;
+  background:#f4f6f6;color:#07151d;font-size:13px;font-weight:800;transition:.2s
+}
+.cta:hover{transform:translateY(-3px);background:white}
+.hero-art{min-height:300px;position:relative}
+.hero-art:before{
+  content:"DAILY";position:absolute;right:0;top:30px;font-size:clamp(100px,16vw,230px);
+  font-weight:900;letter-spacing:-15px;color:rgba(220,230,235,.08)
+}
+.hero-note{position:absolute;right:2%;bottom:26px;color:#aebbc1;font-size:11px;letter-spacing:2px}
+.slide-mark{margin-top:44px;font-size:13px;color:#dbe2e5;letter-spacing:2px}
+.slide-mark span{color:#71818a;margin-left:28px}
+.collections{
+  padding:24px 26px 26px;border:1px solid rgba(220,232,238,.2);border-radius:26px;
+  background:rgba(12,29,40,.68);backdrop-filter:blur(24px);
+  box-shadow:0 18px 60px rgba(0,0,0,.2)
+}
+.section-head{display:flex;justify-content:space-between;align-items:end;gap:20px;margin:0 0 18px}
+.section-head h2{font-size:29px;letter-spacing:-1px;margin:0 0 5px}
+.section-head p{margin:0;color:#aebbc1;font-size:13px}
+.view-all{font-size:13px;text-decoration:underline;text-underline-offset:4px}
+.collection-grid{
+  display:grid;grid-template-columns:repeat(4,minmax(0,1fr)) minmax(260px,2.15fr);gap:14px
+}
+.category-card,.promo{
+  min-height:180px;position:relative;overflow:hidden;border:1px solid rgba(226,236,240,.17);
+  border-radius:22px;background:linear-gradient(145deg,rgba(70,91,105,.42),rgba(5,17,26,.76));
+  transition:.25s
+}
+.category-card:hover,.promo:hover{transform:translateY(-4px);border-color:rgba(255,255,255,.42)}
+.category-card img{width:100%;height:180px;object-fit:cover;opacity:.78;mix-blend-mode:screen}
+.category-card:after{content:"";position:absolute;inset:35% 0 0;background:linear-gradient(transparent,rgba(2,10,16,.88))}
+.category-label{position:absolute;z-index:1;left:18px;bottom:18px;font-weight:700;font-size:14px}
+.category-label span{display:block;font-size:20px;font-weight:400;margin-top:4px}
+.promo{
+  display:flex;align-items:end;padding:22px;
+  background:linear-gradient(90deg,rgba(2,12,19,.9),rgba(2,12,19,.2)),url("https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1100&q=85") center/cover
+}
+.promo small{font-size:10px;letter-spacing:2px;color:#c5d0d5}
+.promo h3{font-size:27px;margin:9px 0 16px}
+.promo .cta{padding:11px 17px;font-size:11px}
+.shop{padding:80px 4% 65px}
+.shop-heading{display:flex;justify-content:space-between;align-items:end;margin-bottom:24px}
+.shop-heading h2{font-size:42px;margin:10px 0 0;letter-spacing:-2px}
+.shop-heading p{color:#aebbc1;font-size:13px}
+.tools{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-bottom:24px}
+.filters{display:flex;gap:8px;flex-wrap:wrap}
+.filter{
+  border:1px solid var(--line);border-radius:30px;background:rgba(5,18,27,.6);color:#e4eaed;
+  padding:10px 17px;font-size:12px;cursor:pointer
+}
+.filter.active,.filter:hover{background:#e9eeee;color:#07151d}
+.search{width:230px;border:1px solid var(--line);border-radius:30px;background:rgba(5,18,27,.6);color:white;padding:11px 16px;outline:none}
+.search::placeholder{color:#b1bec4}
+.product-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:24px 16px}
+.product[hidden]{display:none}
+.product-image{aspect-ratio:3/4;position:relative;overflow:hidden;border-radius:12px;background:#1a2b36}
+.product-image img{width:100%;height:100%;object-fit:cover;transition:transform .45s;display:block}
+.product:hover img{transform:scale(1.05)}
+.tag{position:absolute;top:12px;left:12px;padding:7px 10px;background:#eef1f1;color:#101a20;font-size:9px;letter-spacing:1px;font-weight:800}
+.product-info{display:flex;justify-content:space-between;gap:10px;padding:13px 2px}
+.product-info strong{display:block;font-size:13px;margin-bottom:5px}
+.product-info small{color:#aebbc1;font-size:11px}
+.price{font-size:13px;font-weight:800;white-space:nowrap}
+.about{
+  display:grid;grid-template-columns:1fr 1fr;gap:44px;align-items:center;
+  padding:54px 6%;border:1px solid var(--line);border-radius:24px;
+  background:rgba(7,22,32,.68);backdrop-filter:blur(20px)
+}
+.about h2{font-size:48px;line-height:.95;letter-spacing:-3px;margin:15px 0}
+.about p{max-width:460px;color:#b7c2c8;line-height:1.8;font-size:14px}
+.about img{width:100%;height:300px;object-fit:cover;border-radius:14px;opacity:.88}
+footer{display:flex;justify-content:space-between;gap:20px;padding:28px 8px;color:#c1cbd0;font-size:12px}
+footer strong{color:white;letter-spacing:2px}
+@media(max-width:950px){
+ .nav{gap:16px}.collection-grid{grid-template-columns:repeat(4,1fr)}.promo{grid-column:span 4;min-height:190px}
+ .product-grid{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:700px){
+ .shell{width:calc(100% - 24px);margin:12px auto}
+ .topbar{height:65px;padding:0 18px}.brand{font-size:24px}
+ .menu-btn{display:block}.nav{display:none;position:absolute;z-index:10;top:78px;left:12px;right:12px;padding:20px;border-radius:16px;background:#0a1a25;flex-direction:column;align-items:flex-start}
+ .nav.open{display:flex}.actions{gap:10px}.hero{grid-template-columns:1fr;min-height:420px;padding:55px 7% 28px}
+ h1{font-size:76px;letter-spacing:-5px}.hero-art{display:none}.slide-mark{margin-top:30px}
+ .collections{padding:19px 14px}.section-head h2{font-size:23px}
+ .collection-grid{grid-template-columns:repeat(2,1fr)}.category-card{min-height:155px}.category-card img{height:155px}
+ .promo{grid-column:span 2;min-height:190px}.shop{padding:55px 2%}
+ .shop-heading{align-items:start;flex-direction:column}.shop-heading h2{font-size:34px}
+ .tools{align-items:stretch;flex-direction:column}.search{width:100%}
+ .product-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 10px}
+ .product-info strong{font-size:12px}.price{font-size:12px}
+ .about{grid-template-columns:1fr;gap:20px;padding:28px 20px}.about h2{font-size:40px}
+ .about img{height:220px}footer{flex-wrap:wrap}
+}
+</style>
 </head>
 <body>
-
 <div class="shell">
-<header><a class="logo" href="#">DAILY<span>.</span></a><nav><a href="#shop">Boutique</a><a href="#shop" data-cat-link="Homme">Homme</a><a href="#shop" data-cat-link="Femme">Femme</a><a href="#story">À propos</a></nav><div class="actions"><button class="iconbtn" aria-label="Favoris" onclick="showFavorites()">♡</button><button class="iconbtn" aria-label="Panier" onclick="openCart()">♧<span class="count" id="cartCount">0</span></button></div></header>
-<section class="hero"><div class="hero-copy"><div class="eyebrow">Première collection · Daily essentials</div><h1>DAILY<br><em>FASHION.</em></h1><p>Des essentiels contemporains, des silhouettes simples et des pièces pensées pour accompagner chaque journée.</p><a class="primary" href="#shop">Découvrir la collection <span>↗</span></a></div><div class="hero-note">Paris · Everyday, elevated</div></section>
-<div class="marquee">LESS, BUT BETTER &nbsp; — &nbsp; DAILY WARDROBE &nbsp; — &nbsp; MADE FOR EVERY DAY</div>
-<section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">Sélection quotidienne</div><h2>La collection</h2></div><p id="resultCount">24 pièces à découvrir</p></div>
-<div class="toolbar"><div class="filters"><button class="filter active" data-filter="Tous">Tout</button><button class="filter" data-filter="Homme">Homme</button><button class="filter" data-filter="Femme">Femme</button><button class="filter" data-filter="Chaussures">Chaussures</button><button class="filter" data-filter="Accessoires">Accessoires</button></div><input class="search" id="search" placeholder="Rechercher un article..." aria-label="Rechercher un article"></div><div class="grid" id="products"></div></section>
-<section class="story" id="story"><div class="story-art"></div><div class="story-copy"><div class="eyebrow">L'esprit DAILY</div><h2>Le style.<br>Sans effort.</h2><p>Une garde-robe construite autour de pièces faciles à porter, de coupes intemporelles et de détails subtils. DAILY accompagne le quotidien, simplement.</p><a class="primary" href="#shop">Explorer les pièces <span>↗</span></a></div></section>
-<footer><div class="footrow"><div><div class="footbrand">DAILY.</div><p class="footnote">DAILY FASHION<br>Everyday, elevated.</p></div><div class="footlinks"><a href="#shop">Boutique</a><a href="#story">À propos</a><a href="mailto:hello@daily-fashion.example">Contact</a></div></div><div class="copyright">© 2026 DAILY FASHION · DEMO STORE</div></footer>
+<header class="topbar">
+  <a class="brand" href="#home">DAILY</a>
+  <nav class="nav" id="nav">
+    <a class="active" href="#home">Accueil</a><a href="#shop">Boutique</a>
+    <a href="#collections">Catégories</a><a href="#about">À propos</a><a href="#footer">Contact</a>
+  </nav>
+  <div class="actions">
+    <button class="icon-btn" aria-label="Rechercher" onclick="document.getElementById('search').focus()">⌕</button>
+    <a class="icon-btn" href="#shop" aria-label="Favoris">♡</a>
+    <a class="icon-btn" href="#shop" aria-label="Panier">♧<span class="bag-count" id="bagCount">0</span></a>
+    <button class="menu-btn" id="menuBtn" aria-label="Menu">☰</button>
+  </div>
+</header>
+
+<section class="hero" id="home">
+  <div>
+    <div class="eyebrow">Premium fashion brand</div>
+    <h1>DAILY<span>FASHION</span></h1>
+    <p>Plus qu’un style, une attitude.</p>
+    <a class="cta" href="#shop">Découvrir la collection <b>→</b></a>
+    <div class="slide-mark">01 ━━━━━ <span>03</span></div>
+  </div>
+  <div class="hero-art"><div class="hero-note">EVERYDAY · ELEVATED</div></div>
+</section>
+
+<section class="collections" id="collections">
+  <div class="section-head">
+    <div><h2>Nos Collections</h2><p>Découvrez nos dernières pièces</p></div>
+    <a class="view-all" href="#shop">Voir tout&nbsp; →</a>
+  </div>
+  <div class="collection-grid">
+    <a class="category-card" href="#shop" data-jump="Hommes">
+      <img src="https://images.unsplash.com/photo-1556821840-3a63f95609a7?auto=format&fit=crop&w=600&q=85" alt="Sweat à capuche">
+      <span class="category-label">Hommes <span>→</span></span>
+    </a>
+    <a class="category-card" href="#shop" data-jump="Femmes">
+      <img src="https://images.unsplash.com/photo-1551163943-3f6a855d1153?auto=format&fit=crop&w=600&q=85" alt="Mode femme">
+      <span class="category-label">Femmes <span>→</span></span>
+    </a>
+    <a class="category-card" href="#shop" data-jump="Chaussures">
+      <img src="https://images.unsplash.com/photo-1542291026-7eec264c27ff?auto=format&fit=crop&w=600&q=85" alt="Sneakers">
+      <span class="category-label">Chaussures <span>→</span></span>
+    </a>
+    <a class="category-card" href="#shop" data-jump="Accessoires">
+      <img src="https://images.unsplash.com/photo-1553062407-98eeb64c6a62?auto=format&fit=crop&w=600&q=85" alt="Sac">
+      <span class="category-label">Accessoires <span>→</span></span>
+    </a>
+    <div class="promo">
+      <div><small>NOUVELLE COLLECTION</small><h3>Élégance Moderne</h3><a class="cta" href="#shop">Voir la collection&nbsp; →</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="shop" id="shop">
+  <div class="shop-heading"><div><div class="eyebrow">The DAILY selection</div><h2>Les pièces du moment</h2></div><p>24 articles sélectionnés</p></div>
+  <div class="tools">
+    <div class="filters" id="filters">
+      <button class="filter active" data-filter="Tout">Tout</button>
+      <button class="filter" data-filter="Hommes">Hommes</button>
+      <button class="filter" data-filter="Femmes">Femmes</button>
+      <button class="filter" data-filter="Chaussures">Chaussures</button>
+      <button class="filter" data-filter="Accessoires">Accessoires</button>
+    </div>
+    <input class="search" id="search" type="search" placeholder="Rechercher un article...">
+  </div>
+  <div class="product-grid" id="productGrid">
+    __PRODUCTS__
+  </div>
+</section>
+
+<section class="about" id="about">
+  <div><div class="eyebrow">About DAILY</div><h2>Simple pieces.<br>Strong identity.</h2>
+  <p>DAILY FASHION imagine un vestiaire moderne et facile à porter. Des essentiels, des coupes actuelles et une palette intemporelle pour composer ton style, chaque jour.</p>
+  <a class="cta" href="#shop">Explorer la boutique&nbsp; →</a></div>
+  <img src="https://images.unsplash.com/photo-1483985988355-763728e1935b?auto=format&fit=crop&w=1000&q=85" alt="Éditorial mode DAILY">
+</section>
+<footer id="footer"><strong>DAILY</strong><span>Everyday, elevated.</span><span>Contact : hello@daily-fashion.fr</span><span>© 2026 DAILY FASHION</span></footer>
 </div>
-<div class="overlay" id="overlay" onclick="closeCart()"></div><aside class="cart" id="cart"><div class="carthead"><h3>Votre panier</h3><button class="close" onclick="closeCart()">×</button></div><div id="cartItems"></div><div class="carttotal"><span>Total</span><span id="total">€0.00</span></div><button class="checkout" onclick="alert('Boutique de démonstration : le paiement sera ajouté plus tard.')">Passer la commande</button></aside>
 <script>
-const items=[
-["T-shirt Essential","Homme","€29.00","https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?w=700","BESTSELLER"],
-["Sweat Oversize","Homme","€65.00","https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=700","NEW"],
-["Chemise Oxford","Homme","€59.00","https://images.unsplash.com/photo-1596755389378-c31d21fd1273?w=700",""],
-["Pantalon Relax","Homme","€72.00","https://images.unsplash.com/photo-1473966968600-fa801b869a1a?w=700",""],
-["Veste Workwear","Homme","€110.00","https://images.unsplash.com/photo-1551028719-00167b16eac5?w=700","NEW"],
-["Hoodie Daily","Homme","€79.00","https://images.unsplash.com/photo-1578681994506-b8f463449011?w=700",""],
-["Jean Straight","Homme","€69.00","https://images.unsplash.com/photo-1542272604-787c3835535d?w=700",""],
-["Polo Minimal","Homme","€45.00","https://images.unsplash.com/photo-1625910513413-5fc4e6d7a2f6?w=700",""],
-["Top côtelé","Femme","€32.00","https://images.unsplash.com/photo-1564257577-1e3b7f6c3f8a?w=700","NEW"],
-["Pull Soft Knit","Femme","€74.00","https://images.unsplash.com/photo-1576566588028-4147f3842f27?w=700",""],
-["Robe Daily","Femme","€89.00","https://images.unsplash.com/photo-1539008835657-9e8e9680c956?w=700",""],
-["Blazer Oversize","Femme","€115.00","https://images.unsplash.com/photo-1591047139829-d91aecb6caea?w=700",""],
-["Pantalon Tailored","Femme","€76.00","https://images.unsplash.com/photo-1594633312681-425c7b97ccd1?w=700",""],
-["Cardigan Soft","Femme","€68.00","https://images.unsplash.com/photo-1627225924765-552d49cf47ad?w=700",""],
-["Jupe Studio","Femme","€54.00","https://images.unsplash.com/photo-1583496661160-fb5886a0aaaa?w=700",""],
-["Chemise Daily","Femme","€62.00","https://images.unsplash.com/photo-1608234807905-4466023792f5?w=700",""],
-["Sneakers Court","Chaussures","€95.00","https://images.unsplash.com/photo-1542291026-7eec264c27ff?w=700","BESTSELLER"],
-["Sneakers Mono","Chaussures","€89.00","https://images.unsplash.com/photo-149-5555961986-6d4c1ecb7be3?w=700",""],
-["Runner Retro","Chaussures","€105.00","https://images.unsplash.com/photo-1552346154-21d32810aba3?w=700","NEW"],
-["Boots Urban","Chaussures","€130.00","https://images.unsplash.com/photo-1543163521-1bf539c55dd2?w=700",""],
-["Sac Everyday","Accessoires","€85.00","https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=700",""],
-["Casquette Logo","Accessoires","€28.00","https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=700",""],
-["Ceinture Classic","Accessoires","€35.00","https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=700",""],
-["Tote Bag Daily","Accessoires","€22.00","https://images.unsplash.com/photo-1590874103328-eac38a683ce7?w=700",""]
-];
-let filter="Tous",cart=[],favorites=new Set(),favoriteMode=false;
-const grid=document.getElementById('products');
-function render(){let q=document.getElementById('search').value.toLowerCase();let shown=items.map((p,i)=>({...p,id:i})).filter(p=>(filter==="Tous"||p[1]===filter)&&((p[0]+" "+p[1]).toLowerCase().includes(q))&&(!favoriteMode||favorites.has(p.id)));document.getElementById('resultCount').textContent=shown.length+" pièce"+(shown.length>1?"s":"")+" à découvrir";grid.innerHTML=shown.map(p=>'<article class="product"><div class="photo"><img loading="lazy" src="'+p[3]+'" alt="'+p[0]+'" onerror="this.style.opacity=0.15"><span class="tag">'+(p[4]||p[1])+'</span><button class="heart '+(favorites.has(p.id)?'on':'')+'" onclick="toggleFav('+p.id+')" aria-label="Ajouter aux favoris">'+(favorites.has(p.id)?'♥':'♡')+'</button></div><div class="details"><div><div class="name">'+p[0]+'</div><div class="category">'+p[1]+'</div></div><div class="price">'+p[2]+'</div></div><button class="add" onclick="addCart('+p.id+')">Ajouter au panier +</button></article>').join('')||'<p class="empty">Aucun article trouvé.</p>'}
-document.querySelectorAll('.filter').forEach(b=>b.addEventListener('click',()=>{document.querySelectorAll('.filter').forEach(x=>x.classList.remove('active'));b.classList.add('active');filter=b.dataset.filter;favoriteMode=false;render()}));
-document.getElementById('search').addEventListener('input',render);
-document.querySelectorAll('[data-cat-link]').forEach(a=>a.addEventListener('click',()=>{filter=a.dataset.catLink;document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.filter===filter));render()}));
-function toggleFav(id){favorites.has(id)?favorites.delete(id):favorites.add(id);render()}
-function showFavorites(){favoriteMode=!favoriteMode;filter="Tous";document.querySelectorAll('.filter').forEach(x=>x.classList.toggle('active',x.dataset.filter==="Tous"));render();document.getElementById('shop').scrollIntoView()}
-function addCart(id){cart.push(id);document.getElementById('cartCount').textContent=cart.length;renderCart();openCart()}
-function renderCart(){let el=document.getElementById('cartItems');el.innerHTML=cart.length?cart.map((id,i)=>'<div class="cartitem"><img src="'+items[id][3]+'" alt=""><div><strong>'+items[id][0]+'</strong><small>'+items[id][2]+'</small><button style="border:0;background:none;padding:8px 0;color:#657386;cursor:pointer" onclick="removeCart('+i+')">Retirer</button></div></div>').join(''):'<div class="empty">Votre panier est vide pour le moment.</div>';let total=cart.reduce((s,id)=>s+Number(items[id][2].replace('€','')),0);document.getElementById('total').textContent='€'+total.toFixed(2)}
-function removeCart(i){cart.splice(i,1);document.getElementById('cartCount').textContent=cart.length;renderCart()}
-function openCart(){document.getElementById('overlay').classList.add('show');document.getElementById('cart').classList.add('show')}
-function closeCart(){document.getElementById('overlay').classList.remove('show');document.getElementById('cart').classList.remove('show')}
-render();
+const menuBtn=document.getElementById('menuBtn'),nav=document.getElementById('nav');
+menuBtn.addEventListener('click',()=>nav.classList.toggle('open'));
+nav.querySelectorAll('a').forEach(a=>a.addEventListener('click',()=>nav.classList.remove('open')));
+let chosen='Tout';
+const cards=[...document.querySelectorAll('.product')],search=document.getElementById('search');
+function applyFilters(){
+ const q=search.value.toLowerCase().trim();
+ cards.forEach(card=>{
+  const cat=chosen==='Tout'||card.dataset.category===chosen;
+  const text=(card.dataset.name+' '+card.textContent).toLowerCase();
+  card.hidden=!(cat&&text.includes(q));
+ });
+}
+document.querySelectorAll('[data-filter]').forEach(btn=>btn.addEventListener('click',()=>{
+ chosen=btn.dataset.filter;
+ document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b===btn));
+ applyFilters();
+}));
+search.addEventListener('input',applyFilters);
+document.querySelectorAll('[data-jump]').forEach(a=>a.addEventListener('click',()=>{
+ chosen=a.dataset.jump;
+ document.querySelectorAll('[data-filter]').forEach(b=>b.classList.toggle('active',b.dataset.filter===chosen));
+ applyFilters();
+}));
 </script>
-</body></html>
+</body>
+</html>'''
+
+products = [
+("Hoodie Essential","Gris · Unisexe","79 €","Hommes","photo-1556821840-3a63f95609a7","NEW"),
+("T-shirt DAILY","Blanc · Coton","35 €","Hommes","photo-1521572163474-6864f9cf17ab",""),
+("Jean Relaxed","Bleu · Denim","69 €","Hommes","photo-1542272604-787c3835535d",""),
+("Surchemise DAILY","Sauge · Coton","75 €","Hommes","photo-1598033129183-c4f50c736f10","BEST"),
+("Veste Minimal","Noir · Coupe droite","110 €","Femmes","photo-1591047139829-d91aecb6caea","NEW"),
+("Pull Soft Knit","Crème · Maille","65 €","Femmes","photo-1576566588028-4147f3842f27",""),
+("Pantalon Wide","Gris · Fluide","72 €","Femmes","photo-1509631179647-0177331693ae",""),
+("Robe Essential","Noir · Minimal","89 €","Femmes","photo-1539008835657-9e8e9680c956",""),
+("Veste Street","Noir · Utility","95 €","Hommes","photo-1529139574466-a303027c1d8b",""),
+("Sweat Zip","Bleu nuit · Unisexe","68 €","Hommes","photo-1551488831-00ddcb6c6bd3",""),
+("Pantalon Cargo","Olive · Relaxed","78 €","Hommes","photo-1515886657613-9f3515b0c78f",""),
+("Chemise Linen","Blanc · Lin","59 €","Hommes","photo-1602810318383-e386cc2a3ccf",""),
+("Top côtelé","Beige · Doux","29 €","Femmes","photo-1503342217505-b0a15ec3261c",""),
+("Cardigan DAILY","Gris · Maille","74 €","Femmes","photo-1434389677669-e08b4cac3105",""),
+("Jean Straight","Bleu délavé","70 €","Femmes","photo-1541099649105-f69ad21f3246",""),
+("Blazer DAILY","Sable · Tailoring","115 €","Femmes","photo-1594633312681-425c7b97ccd1",""),
+("Sneakers Runner","Blanc · Sport","99 €","Chaussures","photo-1542291026-7eec264c27ff","NEW"),
+("Sneakers Retro","Crème · Casual","105 €","Chaussures","photo-1491553895911-0055 test",""),
+("Sneakers Low","Noir · Minimal","89 €","Chaussures","photo-1525966222134-fcfa99b8ae77",""),
+("Bottines DAILY","Noir · Boots","139 €","Chaussures","photo-1543163521-1bf539c55dd2",""),
+("Casquette DAILY","Bleu nuit · Coton","25 €","Accessoires","photo-1588850561407-ed78c282e89b",""),
+("Sac Crossbody","Noir · Everyday","55 €","Accessoires","photo-1553062407-98eeb64c6a62",""),
+("Ceinture Minimal","Noir · Essentiel","32 €","Accessoires","photo-1523170335258-f5ed11844a49",""),
+("Tote bag DAILY","Naturel · Canvas","28 €","Accessoires","photo-1544816155-12df9643f363","")
+]
+bad = "photo-1491553895911-0055 test"
+fixed = "photo-1491553895911-0055d3b1f3f4"
+cards_html=[]
+for name,desc,price,cat,img,tag in products:
+    img=img.replace(bad,fixed)
+    badge=f'<span class="tag">{tag}</span>' if tag else ''
+    cards_html.append(f'''<article class="product" data-category="{cat}" data-name="{name.lower()}">
+      <div class="product-image"><img src="https://images.unsplash.com/{img}?auto=format&fit=crop&w=700&q=85" alt="{name}" loading="lazy">{badge}</div>
+      <div class="product-info"><div><strong>{name}</strong><small>{desc}</small></div><span class="price">{price}</span></div>
+    </article>''')
+
+site=site.replace("__BACKGROUND__",bg_url).replace("__PRODUCTS__","\n".join(cards_html))
+out=base/"DAILY-FASHION-site.html"
+out.write_text(site,encoding="utf-8")
+print(f"Site prêt : {out}")
+print(f"Fichier autonome : {out.stat().st_size/1024:.0f} Ko")
