@@ -36,13 +36,28 @@ footer{padding:55px 0 30px;border-top:1px solid var(--line)}.footrow{display:fle
 .empty{padding:30px 0;color:#697789;font-size:13px}
 @media(max-width:900px){.grid{grid-template-columns:repeat(3,1fr)}nav{gap:15px}.hero:before{right:-30%}.hero:after{right:-5%}}
 @media(max-width:620px){.shell{padding:0 5%}header{height:68px}.logo{font-size:22px}nav{display:none}.hero{min-height:530px}.hero-copy{padding:70px 0}.hero-note{font-size:8px}.section{padding:60px 0}.grid{grid-template-columns:repeat(2,1fr);gap:24px 10px}.toolbar{align-items:stretch}.search{width:100%}.story{grid-template-columns:1fr}.story-art{min-height:220px}.story-copy{padding:35px 25px}.story-copy h2{font-size:34px}.section-head{align-items:start;display:block}.section-head p{margin-top:12px}}
-</style>
+/* DAILY — redesign inspired by the second reference */
+body{background:#071820;position:relative;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-2;background:radial-gradient(ellipse at 48% -10%,#b9c9c98c,transparent 34%),radial-gradient(ellipse at 3% 35%,#7d919477,transparent 27%),radial-gradient(ellipse at 95% 40%,#71898c66,transparent 30%),linear-gradient(145deg,#526165,#172e36 27%,#061820 68%,#102a32)}
+.topbar{display:none}
+header{height:134px;margin:26px 0 0;padding:0 34px;border:1px solid #e6f2f43d;border-radius:32px;background:linear-gradient(110deg,#dce7e742,#0c252fae 42%,#071c37c7);backdrop-filter:blur(22px);box-shadow:0 15px 55px #0002}
+.logo{font-size:39px;letter-spacing:.08em}.logo span{display:none}nav{gap:clamp(18px,3.8vw,58px);font-size:19px;color:#d4dcde}nav a{padding:8px 0;border-bottom:3px solid transparent}nav a:hover,nav a:first-child{color:white;border-color:#eaf0f1}.iconbtn{font-size:30px}
+.hero{min-height:680px;padding:0 4.2%;border:0;background:transparent}
+.hero:before,.hero:after{content:"";position:absolute;pointer-events:none;border-radius:50%;z-index:0}
+.hero:before{width:780px;height:780px;right:-4%;top:-24%;background:radial-gradient(circle at 35% 28%,#ced8d894,#4b63649e 38%,#03171ffa 70%);box-shadow:-470px 120px 0 -210px #b1bebe38,-610px -220px 0 -260px #03141ce6,0 0 0 1px #e7f0f01f}
+.hero:after{width:590px;height:590px;right:10%;top:25%;border:90px solid #acbebf1f;box-shadow:0 0 0 42px #04161e40,0 0 0 95px #c3d0d014;transform:rotate(-24deg)}
+.hero-copy{max-width:750px;padding:105px 0 125px;z-index:2}.eyebrow{font-size:15px;letter-spacing:.3em;color:#c0cdd0}
+h1{font-size:clamp(76px,10vw,148px);font-weight:800;line-height:.82;letter-spacing:-.075em;margin:55px 0 30px}h1 em{color:#aebfc3}.hero p{color:#d0dadd;max-width:490px;font-size:18px}.primary{padding:17px 24px;background:#eef2f2;color:#0b2028}.hero-note{color:#b0c1c4}
+.marquee{color:#c0ced0;background:#03131a4d}.section-head p,.footnote{color:#bdc9cc}.filter,.search,.add{background:#071d268c;border-color:#52676d;color:#d0dcde}.filter.active,.filter:hover,.add:hover{background:#e9eef0;color:#0b1a22}.category{color:#b0c0c4}.price{color:#e0e8e9}
+.story-art{background:radial-gradient(circle at 60% 20%,#819294,#17323a 50%,#061820)}
+@media(max-width:900px){header{height:105px;padding:0 22px}.logo{font-size:30px}nav{gap:17px;font-size:14px}.hero:before{right:-30%}.hero:after{right:-5%}}
+@media(max-width:620px){header{height:76px;margin-top:12px;padding:0 17px;border-radius:22px}.logo{font-size:24px}.iconbtn{font-size:25px}.hero{min-height:550px;padding:0 2%}.hero:before{width:520px;height:520px;right:-70%;top:-5%}.hero:after{width:360px;height:360px;right:-28%;top:28%;border-width:55px}h1{font-size:clamp(66px,17vw,100px);margin:40px 0 25px}.hero p{font-size:15px;max-width:330px}}</style>
 </head>
 <body>
-<div class="topbar">Free shipping on orders over €100 · New collection available</div>
+
 <div class="shell">
-<header><a class="logo" href="#">DAILY<span>.</span></a><nav><a href="#shop">Shop</a><a href="#shop" data-cat-link="Homme">Homme</a><a href="#shop" data-cat-link="Femme">Femme</a><a href="#story">Notre univers</a></nav><div class="actions"><button class="iconbtn" aria-label="Favoris" onclick="showFavorites()">♡</button><button class="iconbtn" aria-label="Panier" onclick="openCart()">♧<span class="count" id="cartCount">0</span></button></div></header>
-<section class="hero"><div class="hero-copy"><div class="eyebrow">Daily essentials · Collection 01</div><h1>DAILY<br><em>FASHION.</em></h1><p>Des essentiels contemporains, des silhouettes simples et des pièces pensées pour accompagner chaque journée.</p><a class="primary" href="#shop">Découvrir la collection <span>↗</span></a></div><div class="hero-note">Paris · Everyday, elevated</div></section>
+<header><a class="logo" href="#">DAILY<span>.</span></a><nav><a href="#shop">Boutique</a><a href="#shop" data-cat-link="Homme">Homme</a><a href="#shop" data-cat-link="Femme">Femme</a><a href="#story">À propos</a></nav><div class="actions"><button class="iconbtn" aria-label="Favoris" onclick="showFavorites()">♡</button><button class="iconbtn" aria-label="Panier" onclick="openCart()">♧<span class="count" id="cartCount">0</span></button></div></header>
+<section class="hero"><div class="hero-copy"><div class="eyebrow">Première collection · Daily essentials</div><h1>DAILY<br><em>FASHION.</em></h1><p>Des essentiels contemporains, des silhouettes simples et des pièces pensées pour accompagner chaque journée.</p><a class="primary" href="#shop">Découvrir la collection <span>↗</span></a></div><div class="hero-note">Paris · Everyday, elevated</div></section>
 <div class="marquee">LESS, BUT BETTER &nbsp; — &nbsp; DAILY WARDROBE &nbsp; — &nbsp; MADE FOR EVERY DAY</div>
 <section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">Sélection quotidienne</div><h2>La collection</h2></div><p id="resultCount">24 pièces à découvrir</p></div>
 <div class="toolbar"><div class="filters"><button class="filter active" data-filter="Tous">Tout</button><button class="filter" data-filter="Homme">Homme</button><button class="filter" data-filter="Femme">Femme</button><button class="filter" data-filter="Chaussures">Chaussures</button><button class="filter" data-filter="Accessoires">Accessoires</button></div><input class="search" id="search" placeholder="Rechercher un article..." aria-label="Rechercher un article"></div><div class="grid" id="products"></div></section>
