@@ -115,6 +115,35 @@ h1{font-size:clamp(64px,17vw,100px)}
 .about-image{height:250px}
 footer{flex-direction:column;padding:22px 5%}
 }
+
+/* DAILY : fenêtres produit, panier et paiement */
+.modal-overlay{display:none;position:fixed;inset:0;z-index:100;background:#000b;backdrop-filter:blur(7px);align-items:center;justify-content:center;padding:18px}
+.modal-overlay.open{display:flex}
+.modal-box{position:relative;width:min(760px,100%);max-height:90vh;overflow:auto;background:#10212c;border:1px solid #ffffff2b;border-radius:18px;padding:26px;color:#f7f9fa;box-shadow:0 25px 80px #0009}
+.modal-close{position:absolute;right:15px;top:10px;border:0;background:transparent;color:#fff;font-size:28px;cursor:pointer}
+.product-detail{display:grid;grid-template-columns:1fr 1fr;gap:25px;align-items:center}
+.product-detail img{width:100%;height:340px;object-fit:cover;border-radius:12px;background:#203440}
+.modal-box h2{margin:0 35px 12px 0;font-size:25px}
+.modal-price{font-size:20px;font-weight:700;margin:16px 0}
+.modal-label{display:block;margin:14px 0 7px;color:#d6dfe3;font-size:13px}
+.modal-select,.payment-input{width:100%;padding:13px;border:1px solid #ffffff35;border-radius:9px;background:#091923;color:white;font:inherit}
+.modal-action{width:100%;border:0;border-radius:9px;padding:14px 18px;margin-top:18px;background:#f4f6f6;color:#06141b;font-weight:700;cursor:pointer}
+.cart-row{display:grid;grid-template-columns:64px 1fr auto;gap:12px;align-items:center;padding:13px 0;border-bottom:1px solid #ffffff20}
+.cart-row img{width:64px;height:74px;object-fit:cover;border-radius:8px}
+.cart-row-name{font-weight:700;font-size:13px}
+.cart-row-info{color:#aebbc1;font-size:12px;margin-top:4px}
+.cart-row-price{font-size:13px;font-weight:700;white-space:nowrap}
+.cart-controls{display:flex;align-items:center;gap:8px;margin-top:8px}
+.cart-controls button{width:25px;height:25px;border:1px solid #ffffff35;border-radius:6px;background:#1c3442;color:white;cursor:pointer}
+.cart-remove{border:0!important;background:transparent!important;color:#c6d0d5!important;width:auto!important;padding:0 4px}
+.cart-total{display:flex;justify-content:space-between;font-weight:700;padding:16px 0;font-size:16px}
+.cart-checkout{width:100%;border:0;border-radius:9px;padding:14px;background:#f4f6f6;color:#06141b;font-weight:700;cursor:pointer}
+.cart-empty{padding:20px 0;color:#d6dfe3;font-size:13px}
+.payment-note{font-size:12px;line-height:1.6;color:#c3cdd2;background:#ffffff0b;border:1px solid #ffffff20;border-radius:9px;padding:12px;margin:14px 0}
+.payment-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.payment-success{display:none;margin-top:14px;padding:14px;border-radius:9px;background:#183c31;color:#b8f0d4;text-align:center;font-weight:700}
+@media(max-width:600px){.product-detail{grid-template-columns:1fr}.product-detail img{height:230px}.modal-box{padding:20px}.cart-row{grid-template-columns:54px 1fr auto}.cart-row img{width:54px;height:65px}}
+
 </style>
 </head>
 <body>
@@ -490,10 +519,46 @@ footer{flex-direction:column;padding:22px 5%}
 </div>
 
 <aside class="cart-panel glass" id="cartPanel">
-  <div class="cart-top"><h3>Ton panier</h3><button class="close-cart" id="closeCart">×</button></div>
+  <div class="cart-top"><h3>Ton panier</h3><button class="close-cart" id="closeCart" aria-label="Fermer le panier">×</button></div>
   <div class="cart-items" id="cartItems">Ton panier est vide pour le moment.</div>
-  <p class="cart-hint">Démo visuelle : aucun paiement ni commande réelle n’est activé.</p>
+  <div class="cart-total"><span>Total</span><span id="cartTotal">0,00 €</span></div>
+  <button class="cart-checkout" id="checkoutButton">Passer au paiement</button>
 </aside>
+
+<div class="modal-overlay" id="productModal" role="dialog" aria-modal="true" aria-label="Détail du produit">
+  <div class="modal-box">
+    <button class="modal-close" id="closeProductModal" aria-label="Fermer">×</button>
+    <div class="product-detail">
+      <img id="detailImage" src="" alt="">
+      <div>
+        <p class="eyebrow">DAILY — COLLECTION</p>
+        <h2 id="detailName"></h2>
+        <div class="modal-price" id="detailPrice"></div>
+        <label class="modal-label" for="detailSize">Choisir une taille</label>
+        <select class="modal-select" id="detailSize"></select>
+        <button class="modal-action" id="addDetailToCart">Ajouter au panier</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="paymentModal" role="dialog" aria-modal="true" aria-label="Paiement">
+  <div class="modal-box" style="max-width:480px">
+    <button class="modal-close" id="closePaymentModal" aria-label="Fermer">×</button>
+    <p class="eyebrow">DAILY CHECKOUT</p>
+    <h2>Informations de paiement</h2>
+    <div class="payment-note">Espace de démonstration uniquement. Les valeurs affichées sont fictives : aucune carte bancaire réelle ne doit être saisie. Aucune donnée n’est envoyée ni enregistrée.</div>
+    <label class="modal-label" for="demoCard">Numéro de carte (test)</label>
+    <input class="payment-input" id="demoCard" value="0000 0000 0000 0000" readonly>
+    <div class="payment-grid">
+      <div><label class="modal-label" for="demoExpiry">Date d’expiration</label><input class="payment-input" id="demoExpiry" value="12/30" readonly></div>
+      <div><label class="modal-label" for="demoCvv">Code de sécurité</label><input class="payment-input" id="demoCvv" value="000" readonly></div>
+    </div>
+    <div class="cart-total"><span>Total de la commande</span><span id="paymentTotal">0,00 €</span></div>
+    <button class="modal-action" id="payButton">Payer</button>
+    <div class="payment-success" id="paymentSuccess">Paiement réussi ! Merci pour ta commande.</div>
+  </div>
+</div>
 
 <script>
 const nav=document.getElementById('nav');
@@ -533,17 +598,99 @@ let cart=[];
 const cartCount=document.getElementById('cartCount');
 const cartPanel=document.getElementById('cartPanel');
 const cartItems=document.getElementById('cartItems');
-function renderCart(){
-  cartCount.textContent=cart.length;
-  cartItems.innerHTML=cart.length?cart.map(item=>'• '+item).join('<br>'):'Ton panier est vide pour le moment.';
+const cartTotal=document.getElementById('cartTotal');
+const productModal=document.getElementById('productModal');
+const paymentModal=document.getElementById('paymentModal');
+let selectedProduct=null;
+const money=value=>value.toLocaleString('fr-FR',{style:'currency',currency:'EUR'});
+const escapeHTML=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
+try{cart=JSON.parse(localStorage.getItem('daily_cart_v1')||'[]');if(!Array.isArray(cart))cart=[];}catch(error){cart=[];}
+function saveCart(){try{localStorage.setItem('daily_cart_v1',JSON.stringify(cart));}catch(error){}}
+function getProduct(card){
+  const title=card.querySelector('.product-meta h3')?.textContent.trim()||card.dataset.name;
+  const priceText=card.querySelector('.product-meta strong')?.textContent||'0';
+  const price=Number(priceText.replace(/[^0-9,.-]/g,'').replace(',','.'))||0;
+  const image=card.querySelector('img')?.src||'';
+  return {id:card.querySelector('[data-add]')?.dataset.add||card.dataset.name,name:title,category:card.dataset.category,price,image};
 }
-document.querySelectorAll('[data-add]').forEach(btn=>btn.addEventListener('click',()=>{
-  const card=btn.closest('.product-card');
-  cart.push(card.dataset.name.replace(/\b\w/g,c=>c.toUpperCase()));
-  renderCart();cartPanel.classList.add('open');
+function sizeOptions(category){
+  if(category==='Chaussures')return ['39','40','41','42','43','44'];
+  if(category==='Accessoires')return ['Taille unique'];
+  return ['XS','S','M','L','XL'];
+}
+function openProduct(card){
+  selectedProduct=getProduct(card);
+  document.getElementById('detailImage').src=selectedProduct.image;
+  document.getElementById('detailImage').alt=selectedProduct.name;
+  document.getElementById('detailName').textContent=selectedProduct.name;
+  document.getElementById('detailPrice').textContent=money(selectedProduct.price);
+  document.getElementById('detailSize').innerHTML=sizeOptions(selectedProduct.category).map(size=>`<option value="${size}">${size}</option>`).join('');
+  productModal.classList.add('open');
+}
+function renderCart(){
+  const count=cart.reduce((sum,item)=>sum+item.quantity,0);
+  const total=cart.reduce((sum,item)=>sum+item.price*item.quantity,0);
+  cartCount.textContent=count;
+  cartTotal.textContent=money(total);
+  if(!cart.length){cartItems.innerHTML='<div class="cart-empty">Ton panier est vide pour le moment.</div>';}
+  else{
+    cartItems.innerHTML=cart.map((item,index)=>`<div class="cart-row">
+      <img src="${escapeHTML(item.image)}" alt="${escapeHTML(item.name)}">
+      <div><div class="cart-row-name">${escapeHTML(item.name)}</div>
+      <div class="cart-row-info">Taille : ${escapeHTML(item.size)} · ${money(item.price)}</div>
+      <div class="cart-controls"><button data-cart-action="minus" data-index="${index}" aria-label="Diminuer">−</button><span>${item.quantity}</span><button data-cart-action="plus" data-index="${index}" aria-label="Augmenter">+</button><button class="cart-remove" data-cart-action="remove" data-index="${index}">Retirer</button></div></div>
+      <div class="cart-row-price">${money(item.price*item.quantity)}</div>
+    </div>`).join('');
+  }
+  saveCart();
+}
+document.getElementById('addDetailToCart').addEventListener('click',()=>{
+  if(!selectedProduct)return;
+  const size=document.getElementById('detailSize').value;
+  const existing=cart.find(item=>item.id===selectedProduct.id&&item.size===size);
+  if(existing)existing.quantity+=1;
+  else cart.push({...selectedProduct,size,quantity:1});
+  renderCart();productModal.classList.remove('open');cartPanel.classList.add('open');
+});
+document.querySelectorAll('[data-add]').forEach(button=>button.addEventListener('click',event=>{
+  event.stopPropagation();openProduct(button.closest('.product-card'));
 }));
+document.querySelectorAll('.product-card').forEach(card=>card.addEventListener('click',event=>{
+  if(event.target.closest('button'))return;
+  openProduct(card);
+}));
+cartItems.addEventListener('click',event=>{
+  const button=event.target.closest('[data-cart-action]');if(!button)return;
+  const index=Number(button.dataset.index);const item=cart[index];if(!item)return;
+  if(button.dataset.cartAction==='plus')item.quantity+=1;
+  if(button.dataset.cartAction==='minus')item.quantity-=1;
+  if(button.dataset.cartAction==='remove'||item.quantity<=0)cart.splice(index,1);
+  renderCart();
+});
 document.getElementById('cartToggle').addEventListener('click',()=>cartPanel.classList.toggle('open'));
 document.getElementById('closeCart').addEventListener('click',()=>cartPanel.classList.remove('open'));
+document.getElementById('closeProductModal').addEventListener('click',()=>productModal.classList.remove('open'));
+document.getElementById('closePaymentModal').addEventListener('click',()=>paymentModal.classList.remove('open'));
+[productModal,paymentModal].forEach(modal=>modal.addEventListener('click',event=>{if(event.target===modal)modal.classList.remove('open');}));
+document.getElementById('checkoutButton').addEventListener('click',()=>{
+  if(!cart.length){cartItems.innerHTML='<div class="cart-empty">Ajoute d’abord un article à ton panier.</div>';return;}
+  document.getElementById('paymentTotal').textContent=money(cart.reduce((sum,item)=>sum+item.price*item.quantity,0));
+  document.getElementById('paymentSuccess').style.display='none';
+  paymentModal.classList.add('open');
+});
+document.getElementById('payButton').addEventListener('click',()=>{
+  if(!cart.length)return;
+  document.getElementById('paymentSuccess').style.display='block';
+  cart=[];renderCart();
+  document.getElementById('payButton').disabled=true;
+  document.getElementById('payButton').textContent='Paiement terminé';
+});
+document.getElementById('closePaymentModal').addEventListener('click',()=>{
+  paymentModal.classList.remove('open');
+  document.getElementById('payButton').disabled=false;
+  document.getElementById('payButton').textContent='Payer';
+});
+renderCart();
 </script>
 </body>
 </html>
