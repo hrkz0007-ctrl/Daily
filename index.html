@@ -548,15 +548,15 @@ footer{flex-direction:column;padding:22px 5%}
     <p class="eyebrow">DAILY CHECKOUT</p>
     <h2>Informations de paiement</h2>
     <div class="payment-note">Espace de démonstration uniquement. Les valeurs affichées sont fictives : aucune carte bancaire réelle ne doit être saisie. Aucune donnée n’est envoyée ni enregistrée.</div>
-    <label class="modal-label" for="demoCard">Numéro de carte (test)</label>
-    <input class="payment-input" id="demoCard" value="0000 0000 0000 0000" readonly>
+    <label class="modal-label" for="demoCard">Numéro de carte fictif</label>
+    <input class="payment-input" id="demoCard" type="text" inputmode="numeric" autocomplete="off" maxlength="23" placeholder="Ex. 1234 5678 9101 1121" value="">
     <div class="payment-grid">
-      <div><label class="modal-label" for="demoExpiry">Date d’expiration</label><input class="payment-input" id="demoExpiry" value="12/30" readonly></div>
-      <div><label class="modal-label" for="demoCvv">Code de sécurité</label><input class="payment-input" id="demoCvv" value="000" readonly></div>
+      <div><label class="modal-label" for="demoExpiry">Date d’expiration fictive</label><input class="payment-input" id="demoExpiry" type="text" inputmode="numeric" autocomplete="off" maxlength="5" placeholder="MM/AA" value=""></div>
+      <div><label class="modal-label" for="demoCvv">Code fictif</label><input class="payment-input" id="demoCvv" type="text" inputmode="numeric" autocomplete="off" maxlength="4" placeholder="123" value=""></div>
     </div>
     <div class="cart-total"><span>Total de la commande</span><span id="paymentTotal">0,00 €</span></div>
     <button class="modal-action" id="payButton">Payer</button>
-    <div class="payment-success" id="paymentSuccess">Paiement réussi ! Merci pour ta commande.</div>
+    <div class="payment-success" id="paymentSuccess">Paiement terminé ! Merci de votre commande chez DAILY. À bientôt !<span style="display:block;font-size:12px;font-weight:400;margin-top:8px">Commande fictive : aucune transaction réelle n’a été effectuée.</span></div>
   </div>
 </div>
 
@@ -678,12 +678,25 @@ document.getElementById('checkoutButton').addEventListener('click',()=>{
   document.getElementById('paymentSuccess').style.display='none';
   paymentModal.classList.add('open');
 });
+const demoCard=document.getElementById('demoCard');
+const demoExpiry=document.getElementById('demoExpiry');
+const demoCvv=document.getElementById('demoCvv');
+// Ces champs servent uniquement à tester l'interface : aucune donnée n'est envoyée ni stockée.
+demoCard.addEventListener('input',()=>{demoCard.value=demoCard.value.replace(/[^0-9 ]/g,'').slice(0,23);});
+demoExpiry.addEventListener('input',()=>{demoExpiry.value=demoExpiry.value.replace(/[^0-9/]/g,'').slice(0,5);});
+demoCvv.addEventListener('input',()=>{demoCvv.value=demoCvv.value.replace(/[^0-9]/g,'').slice(0,4);});
 document.getElementById('payButton').addEventListener('click',()=>{
   if(!cart.length)return;
+  const cardDigits=demoCard.value.replace(/\D/g,'');
+  const expiryMatch=demoExpiry.value.match(/^(0[1-9]|1[0-2])\/(\d{2})$/);
+  const cvvDigits=demoCvv.value.replace(/\D/g,'');
+  if(cardDigits.length<12||cardDigits.length>19){alert('Entre un numéro de carte fictif de 12 à 19 chiffres.');demoCard.focus();return;}
+  if(!expiryMatch){alert('Entre une date fictive au format MM/AA, par exemple 12/30.');demoExpiry.focus();return;}
+  if(cvvDigits.length<3||cvvDigits.length>4){alert('Entre un code fictif de 3 ou 4 chiffres.');demoCvv.focus();return;}
   document.getElementById('paymentSuccess').style.display='block';
   cart=[];renderCart();
   document.getElementById('payButton').disabled=true;
-  document.getElementById('payButton').textContent='Paiement terminé';
+  document.getElementById('payButton').textContent='Commande terminée';
 });
 document.getElementById('closePaymentModal').addEventListener('click',()=>{
   paymentModal.classList.remove('open');
